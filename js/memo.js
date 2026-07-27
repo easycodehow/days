@@ -29,3 +29,9 @@ export function formatDate(date) {
   const d = String(date.getDate()).padStart(2, '0');
   return `${y}-${m}-${d}`;
 }
+
+// YYYY-MM-DD 문자열을 "2026년 7월 27일" 형태로 표시용 변환한다
+export function formatDateKo(dateStr) {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  return `${y}년 ${m}월 ${d}일`;
+}

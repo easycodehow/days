@@ -6,7 +6,8 @@ import { formatDate } from '../memo.js';
 const WEEKDAY_KO = ['일', '월', '화', '수', '목', '금', '토'];
 
 // 오늘을 중심으로 한 줄 캘린더 헤더를 렌더링한다
-export function renderCalendarBar(container, { centerDate = new Date(), rangeDays = 7 } = {}) {
+// selectedDate: 현재 선택된 날짜(YYYY-MM-DD), onSelectDate(dateStr): 날짜를 탭했을 때 호출
+export function renderCalendarBar(container, { centerDate = new Date(), rangeDays = 7, selectedDate, onSelectDate } = {}) {
   container.innerHTML = '';
   container.className = 'calendar-bar';
 
@@ -17,10 +18,13 @@ export function renderCalendarBar(container, { centerDate = new Date(), rangeDay
     date.setDate(date.getDate() + offset);
     const dateStr = formatDate(date);
 
-    const item = document.createElement('div');
+    const item = document.createElement('button');
+    item.type = 'button';
     item.className = 'calendar-bar__item';
     item.classList.toggle('calendar-bar__item--today', dateStr === todayStr);
+    item.classList.toggle('calendar-bar__item--selected', dateStr === selectedDate);
     item.dataset.date = dateStr;
+    item.addEventListener('click', () => onSelectDate?.(dateStr));
 
     const weekday = document.createElement('span');
     weekday.className = 'calendar-bar__weekday';

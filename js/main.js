@@ -61,13 +61,13 @@ function getInitialMemos() {
 }
 
 // "+" 버튼으로 새 메모를 작성할 때 쓸 빈 메모(초안)를 만든다
-function createDraftMemo() {
+function createDraftMemo(date) {
   const now = new Date().toISOString();
   return {
     id: crypto.randomUUID(),
     title: '',
     content: '',
-    date: formatDate(new Date()),
+    date,
     size: 3,
     xPct: 30 + Math.random() * 40,
     yPct: 30 + Math.random() * 40,
@@ -97,7 +97,20 @@ function init() {
   // renderCalendarBar가 컨테이너 innerHTML을 초기화하므로 header가 아닌 하위 컨테이너를 넘긴다
   const calendarBarContainer = document.createElement('div');
   header.appendChild(calendarBarContainer);
-  renderCalendarBar(calendarBarContainer);
+
+  let selectedDate = formatDate(new Date());
+
+  function refreshCalendarBar() {
+    renderCalendarBar(calendarBarContainer, {
+      selectedDate,
+      onSelectDate: (dateStr) => {
+        selectedDate = dateStr;
+        refreshCalendarBar();
+      },
+    });
+  }
+
+  refreshCalendarBar();
 
   const content = document.createElement('main');
   app.appendChild(content);
@@ -149,7 +162,7 @@ function init() {
   }
 
   function showCreate() {
-    const draft = createDraftMemo();
+    const draft = createDraftMemo(selectedDate);
 
     fab.classList.add('is-hidden');
     renderDetailView(content, draft, {

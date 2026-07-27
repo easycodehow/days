@@ -90,6 +90,11 @@
   background-color: var(--pink-100);
 }
 
+/* 사용자가 탭해서 선택한 날짜 — 오늘 표시와 별개로 테두리 링으로 표시 */
+.calendar-bar__item--selected {
+  box-shadow: 0 0 0 2px var(--sky-500) inset;
+}
+
 /* ── 메인 화면 ── */
 .app-main {
   position: relative;
@@ -110,6 +115,12 @@
   color: var(--ui-text);
   font-size: var(--fs-meta);
   margin-bottom: 12px;
+}
+
+.detail-view__date {
+  font-size: var(--fs-meta);
+  color: var(--ink-meta);
+  margin-bottom: 4px;
 }
 
 .detail-view__title,

@@ -1,17 +1,26 @@
 // js/views/detailView.js
 // 상세보기 화면 — 전체 본문 + 수정/삭제/저장하기
 
+import { isPastMemo, formatDateKo } from '../memo.js';
+
 // onSave(updatedMemo), onDelete(id)는 기존 메모에만 전달 — 없으면 삭제 버튼을 안 보여준다.
 // onClose(), startEditing: true면 처음부터 편집 상태로 연다(새 메모 작성용)
 export function renderDetailView(container, memo, { onSave, onDelete, onClose, startEditing = false } = {}) {
   container.className = 'detail-view';
   container.innerHTML = '';
 
+  // 기존 메모(onDelete가 있음)이면서 지난 날짜면 수정 불가 — 삭제만 가능
+  const isReadOnly = !!onDelete && isPastMemo(memo.date);
+
   const backBtn = document.createElement('button');
   backBtn.type = 'button';
   backBtn.className = 'detail-view__back';
   backBtn.textContent = '← 목록으로';
   backBtn.addEventListener('click', () => onClose?.());
+
+  const dateLabel = document.createElement('p');
+  dateLabel.className = 'detail-view__date';
+  dateLabel.textContent = formatDateKo(memo.date);
 
   const titleText = document.createElement('h2');
   titleText.className = 'detail-view__title';
@@ -82,10 +91,15 @@ export function renderDetailView(container, memo, { onSave, onDelete, onClose, s
   // 새 메모 작성 상태 — 처음부터 편집 모드, 아직 저장 전이라 삭제할 대상이 없음
   if (startEditing) enterEditMode();
 
-  actions.append(editBtn, saveBtn);
-  if (onDelete) actions.insertBefore(deleteBtn, saveBtn);
+  // 지난 날짜의 기존 메모는 수정/저장하기 버튼 자체를 렌더링하지 않는다 (삭제만 가능)
+  if (isReadOnly) {
+    actions.append(deleteBtn);
+  } else {
+    actions.append(editBtn, saveBtn);
+    if (onDelete) actions.insertBefore(deleteBtn, saveBtn);
+  }
 
-  container.append(backBtn, titleText, titleInput, contentText, contentInput, actions);
+  container.append(backBtn, dateLabel, titleText, titleInput, contentText, contentInput, actions);
 
   if (startEditing) titleInput.focus();
 }

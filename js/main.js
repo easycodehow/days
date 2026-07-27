@@ -94,14 +94,6 @@ function init() {
   brand.textContent = 'days';
   topRow.appendChild(brand);
 
-  const addBtn = document.createElement('button');
-  addBtn.type = 'button';
-  addBtn.className = 'app-header__add';
-  addBtn.textContent = '+';
-  addBtn.setAttribute('aria-label', '메모 추가');
-  addBtn.addEventListener('click', () => showCreate());
-  topRow.appendChild(addBtn);
-
   // renderCalendarBar가 컨테이너 innerHTML을 초기화하므로 header가 아닌 하위 컨테이너를 넘긴다
   const calendarBarContainer = document.createElement('div');
   header.appendChild(calendarBarContainer);
@@ -110,9 +102,19 @@ function init() {
   const content = document.createElement('main');
   app.appendChild(content);
 
+  // 새 메모 작성용 플로팅 버튼 — 상세보기 화면에서는 숨긴다
+  const fab = document.createElement('button');
+  fab.type = 'button';
+  fab.className = 'fab-add';
+  fab.textContent = '+';
+  fab.setAttribute('aria-label', '메모 추가');
+  fab.addEventListener('click', () => showCreate());
+  app.appendChild(fab);
+
   const memos = getInitialMemos();
 
   function showMain() {
+    fab.classList.remove('is-hidden');
     renderMainView(content, memos, {
       onMemoMove: (id, xPct, yPct) => {
         const memo = memos.find((m) => m.id === id);
@@ -129,6 +131,7 @@ function init() {
     const memo = memos.find((m) => m.id === id);
     if (!memo) return;
 
+    fab.classList.add('is-hidden');
     renderDetailView(content, memo, {
       onClose: showMain,
       onSave: (updated) => {
@@ -148,6 +151,7 @@ function init() {
   function showCreate() {
     const draft = createDraftMemo();
 
+    fab.classList.add('is-hidden');
     renderDetailView(content, draft, {
       startEditing: true,
       onClose: showMain,

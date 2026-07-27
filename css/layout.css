@@ -32,19 +32,24 @@
   color: var(--heading);
 }
 
-.app-header__add {
-  width: 32px;
-  height: 32px;
-  flex: 0 0 auto;
+/* 새 메모 작성용 플로팅 버튼(FAB) — 오른쪽 하단 고정 */
+.fab-add {
+  position: fixed;
+  right: calc(20px + env(safe-area-inset-right));
+  bottom: calc(20px + env(safe-area-inset-bottom));
+  z-index: 15;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   background-color: var(--btn-bg);
   color: var(--btn-text);
-  font-size: 18px;
+  font-size: 28px;
   font-weight: 700;
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 2px 8px rgba(38, 90, 140, 0.25);
 }
 
 .calendar-bar {

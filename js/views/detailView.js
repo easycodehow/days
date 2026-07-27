@@ -1,8 +1,9 @@
 // js/views/detailView.js
 // 상세보기 화면 — 전체 본문 + 수정/삭제/저장하기
 
-// onSave(updatedMemo), onDelete(id), onClose()
-export function renderDetailView(container, memo, { onSave, onDelete, onClose } = {}) {
+// onSave(updatedMemo), onDelete(id)는 기존 메모에만 전달 — 없으면 삭제 버튼을 안 보여준다.
+// onClose(), startEditing: true면 처음부터 편집 상태로 연다(새 메모 작성용)
+export function renderDetailView(container, memo, { onSave, onDelete, onClose, startEditing = false } = {}) {
   container.className = 'detail-view';
   container.innerHTML = '';
 
@@ -19,6 +20,7 @@ export function renderDetailView(container, memo, { onSave, onDelete, onClose } 
   const titleInput = document.createElement('input');
   titleInput.type = 'text';
   titleInput.className = 'detail-view__title-input is-hidden';
+  titleInput.placeholder = '제목';
   titleInput.value = memo.title;
 
   const contentText = document.createElement('div');
@@ -27,6 +29,7 @@ export function renderDetailView(container, memo, { onSave, onDelete, onClose } 
 
   const contentInput = document.createElement('textarea');
   contentInput.className = 'detail-view__content-input is-hidden';
+  contentInput.placeholder = '내용을 입력하세요';
   contentInput.value = memo.content;
 
   const actions = document.createElement('div');
@@ -49,14 +52,16 @@ export function renderDetailView(container, memo, { onSave, onDelete, onClose } 
 
   let editing = false;
 
-  editBtn.addEventListener('click', () => {
+  function enterEditMode() {
     editing = true;
     titleText.classList.add('is-hidden');
     contentText.classList.add('is-hidden');
     titleInput.classList.remove('is-hidden');
     contentInput.classList.remove('is-hidden');
-    titleInput.focus();
-  });
+    editBtn.classList.add('is-hidden');
+  }
+
+  editBtn.addEventListener('click', enterEditMode);
 
   saveBtn.addEventListener('click', () => {
     const updated = {
@@ -74,6 +79,13 @@ export function renderDetailView(container, memo, { onSave, onDelete, onClose } 
     }
   });
 
-  actions.append(editBtn, deleteBtn, saveBtn);
+  // 새 메모 작성 상태 — 처음부터 편집 모드, 아직 저장 전이라 삭제할 대상이 없음
+  if (startEditing) enterEditMode();
+
+  actions.append(editBtn, saveBtn);
+  if (onDelete) actions.insertBefore(deleteBtn, saveBtn);
+
   container.append(backBtn, titleText, titleInput, contentText, contentInput, actions);
+
+  if (startEditing) titleInput.focus();
 }

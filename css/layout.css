@@ -19,12 +19,32 @@
   border-bottom: 1px solid var(--line);
 }
 
-.app-header__brand {
+.app-header__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 12px 12px 0;
+}
+
+.app-header__brand {
   font-size: var(--fs-heading);
   font-weight: 700;
   color: var(--heading);
-  text-align: left;
+}
+
+.app-header__add {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background-color: var(--btn-bg);
+  color: var(--btn-text);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .calendar-bar {

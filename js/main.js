@@ -5,6 +5,7 @@ import { renderCalendarBar } from './ui/calendarBar.js';
 import { renderMainView } from './views/mainView.js';
 import { renderDetailView } from './views/detailView.js';
 import { loadMemos, saveMemos } from './store.js';
+import { formatDate } from './memo.js';
 
 // localStorage가 비어있을 때(최초 실행) 시드로 저장할 샘플 메모
 const SEED_MEMOS = [
@@ -59,6 +60,24 @@ function getInitialMemos() {
   return SEED_MEMOS;
 }
 
+// "+" 버튼으로 새 메모를 작성할 때 쓸 빈 메모(초안)를 만든다
+function createDraftMemo() {
+  const now = new Date().toISOString();
+  return {
+    id: crypto.randomUUID(),
+    title: '',
+    content: '',
+    date: formatDate(new Date()),
+    size: 3,
+    xPct: 30 + Math.random() * 40,
+    yPct: 30 + Math.random() * 40,
+    realized: false,
+    pinned: false,
+    createdAt: now,
+    updatedAt: now,
+  };
+}
+
 function init() {
   const app = document.getElementById('app');
 
@@ -66,10 +85,22 @@ function init() {
   header.className = 'app-header';
   app.appendChild(header);
 
+  const topRow = document.createElement('div');
+  topRow.className = 'app-header__top';
+  header.appendChild(topRow);
+
   const brand = document.createElement('div');
   brand.className = 'app-header__brand';
   brand.textContent = 'days';
-  header.appendChild(brand);
+  topRow.appendChild(brand);
+
+  const addBtn = document.createElement('button');
+  addBtn.type = 'button';
+  addBtn.className = 'app-header__add';
+  addBtn.textContent = '+';
+  addBtn.setAttribute('aria-label', '메모 추가');
+  addBtn.addEventListener('click', () => showCreate());
+  topRow.appendChild(addBtn);
 
   // renderCalendarBar가 컨테이너 innerHTML을 초기화하므로 header가 아닌 하위 컨테이너를 넘긴다
   const calendarBarContainer = document.createElement('div');
@@ -108,6 +139,20 @@ function init() {
       onDelete: (deleteId) => {
         const index = memos.findIndex((m) => m.id === deleteId);
         if (index !== -1) memos.splice(index, 1);
+        saveMemos(memos);
+        showMain();
+      },
+    });
+  }
+
+  function showCreate() {
+    const draft = createDraftMemo();
+
+    renderDetailView(content, draft, {
+      startEditing: true,
+      onClose: showMain,
+      onSave: (created) => {
+        memos.push({ ...created, title: created.title || '제목 없음' });
         saveMemos(memos);
         showMain();
       },

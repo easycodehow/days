@@ -1,5 +1,5 @@
 // js/ui/sizeSlider.js
-// 중요도(크기) 조절 — 원을 드래그하면 중심에서의 거리 변화에 따라 1~5단계로 스냅된다
+// 중요도(크기) 조절 — 원을 위/아래로 드래그하면 이동 거리에 따라 1~5단계로 스냅된다
 
 import { getCircleDiameter } from '../memo.js';
 
@@ -35,15 +35,12 @@ export function createSizePicker(initialSize, onChange) {
     circle.setPointerCapture(event.pointerId);
     circle.classList.add('dragging');
 
-    const rect = wrapper.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    const startDist = Math.hypot(event.clientX - centerX, event.clientY - centerY);
+    const startY = event.clientY;
     const startSize = size;
 
     function onMove(moveEvent) {
-      const dist = Math.hypot(moveEvent.clientX - centerX, moveEvent.clientY - centerY);
-      const stepDelta = Math.round((dist - startDist) / PX_PER_STEP);
+      const dy = startY - moveEvent.clientY; // 위로 끌면 커짐, 아래로 끌면 작아짐
+      const stepDelta = Math.round(dy / PX_PER_STEP);
       applySize(startSize + stepDelta);
     }
 

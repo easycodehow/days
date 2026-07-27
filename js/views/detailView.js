@@ -2,6 +2,7 @@
 // 상세보기 화면 — 전체 본문 + 수정/삭제/저장하기
 
 import { isPastMemo, formatDateKo } from '../memo.js';
+import { createSizePicker } from '../ui/sizeSlider.js';
 
 // onSave(updatedMemo), onDelete(id)는 기존 메모에만 전달 — 없으면 삭제 버튼을 안 보여준다.
 // onClose(), startEditing: true면 처음부터 편집 상태로 연다(새 메모 작성용)
@@ -41,6 +42,9 @@ export function renderDetailView(container, memo, { onSave, onDelete, onClose, s
   contentInput.placeholder = '내용을 입력하세요';
   contentInput.value = memo.content;
 
+  const sizePicker = createSizePicker(memo.size);
+  sizePicker.element.classList.add('is-hidden');
+
   const actions = document.createElement('div');
   actions.className = 'detail-view__actions';
 
@@ -67,6 +71,7 @@ export function renderDetailView(container, memo, { onSave, onDelete, onClose, s
     contentText.classList.add('is-hidden');
     titleInput.classList.remove('is-hidden');
     contentInput.classList.remove('is-hidden');
+    sizePicker.element.classList.remove('is-hidden');
     editBtn.classList.add('is-hidden');
   }
 
@@ -77,6 +82,7 @@ export function renderDetailView(container, memo, { onSave, onDelete, onClose, s
       ...memo,
       title: editing ? titleInput.value.trim() || memo.title : memo.title,
       content: editing ? contentInput.value.trim() : memo.content,
+      size: editing ? sizePicker.getSize() : memo.size,
       updatedAt: new Date().toISOString(),
     };
     onSave?.(updated);
@@ -99,7 +105,7 @@ export function renderDetailView(container, memo, { onSave, onDelete, onClose, s
     if (onDelete) actions.insertBefore(deleteBtn, saveBtn);
   }
 
-  container.append(backBtn, dateLabel, titleText, titleInput, contentText, contentInput, actions);
+  container.append(backBtn, dateLabel, titleText, titleInput, sizePicker.element, contentText, contentInput, actions);
 
   if (startEditing) titleInput.focus();
 }

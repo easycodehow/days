@@ -3,9 +3,10 @@
 
 import { renderCalendarBar } from './ui/calendarBar.js';
 import { renderMainView } from './views/mainView.js';
+import { loadMemos, saveMemos } from './store.js';
 
-// TODO: store.js 연동 전 임시 목업 데이터 — "메모 저장/불러오기" 단계에서 localStorage로 교체 예정
-const MOCK_MEMOS = [
+// localStorage가 비어있을 때(최초 실행) 시드로 저장할 샘플 메모
+const SEED_MEMOS = [
   {
     id: 'mock-1',
     title: '기획 회의',
@@ -48,6 +49,15 @@ const MOCK_MEMOS = [
   },
 ];
 
+// 저장된 메모를 불러온다. 저장된 게 없으면 샘플 메모로 시드한 뒤 저장한다.
+function getInitialMemos() {
+  const stored = loadMemos();
+  if (stored.length > 0) return stored;
+
+  saveMemos(SEED_MEMOS);
+  return SEED_MEMOS;
+}
+
 function init() {
   const app = document.getElementById('app');
 
@@ -68,7 +78,7 @@ function init() {
   const main = document.createElement('main');
   main.className = 'app-main';
   app.appendChild(main);
-  renderMainView(main, MOCK_MEMOS);
+  renderMainView(main, getInitialMemos());
 }
 
 init();

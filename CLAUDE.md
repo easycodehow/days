@@ -420,8 +420,8 @@ days/
 - [x] 초안 배포 및 URL 확인 (배포 URL을 개요에 기입) (2026-07-27)
 
 ### 메모 저장/불러오기
-- [ ] `js/store.js` — localStorage 저장/불러오기 모듈
-- [ ] 데이터 구조(version + memos) 초기화 로직
+- [x] `js/store.js` — localStorage 저장/불러오기 모듈 (2026-07-27)
+- [x] 데이터 구조(version + memos) 초기화 로직 (2026-07-27)
 
 ### CRUD 기능
 - [ ] 메모 추가 (원 탭 → `+` → 상세보기 진입/작성)

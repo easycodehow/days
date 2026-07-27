@@ -42,6 +42,13 @@
   --amber-300: #F0A93C;
   --amber-50: #FBEEDA;
 
+  /* 핑크 · 캘린더 선택 강조 (reference/핑크.png) */
+  --pink-100: #FCE7EF;
+  --pink-200: #F8D3E1;
+  --pink-300: #F3B4CD;
+  --candy-500: #F2609A;
+  --candy-600: #DE4A85;
+
   /* 예외 */
   --danger: #D93A3A;
 

@@ -62,12 +62,7 @@
 }
 
 .calendar-bar__item--today {
-  background-color: var(--accent);
-}
-
-.calendar-bar__item--today .calendar-bar__weekday,
-.calendar-bar__item--today .calendar-bar__day {
-  color: var(--btn-text);
+  background-color: var(--pink-100);
 }
 
 /* ── 메인 화면 ── */

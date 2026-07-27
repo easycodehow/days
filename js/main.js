@@ -137,6 +137,12 @@ function init() {
         saveMemos(memos);
       },
       onOpenDetail: (id) => showDetail(id),
+      onMemoResize: (id, newSize) => {
+        const memo = memos.find((m) => m.id === id);
+        if (!memo) return;
+        memo.size = newSize;
+        saveMemos(memos);
+      },
     });
   }
 

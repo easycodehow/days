@@ -9,7 +9,8 @@ const PREVIEW_DIAMETER = 180;
 // 메모 배열을 컨테이너에 떠다니는 원으로 렌더링한다
 // onMemoMove(id, xPct, yPct): 드래그로 위치가 바뀌었을 때 호출
 // onOpenDetail(id): 미리보기의 "+" 버튼을 눌렀을 때 호출
-export function renderMainView(container, memos, { onMemoMove, onOpenDetail } = {}) {
+// onMemoResize(id, size): 두 손가락 핀치로 크기를 바꾸고 손을 뗐을 때 호출
+export function renderMainView(container, memos, { onMemoMove, onOpenDetail, onMemoResize } = {}) {
   container.className = 'app-main main-view';
   container.innerHTML = '';
 
@@ -34,6 +35,13 @@ export function renderMainView(container, memos, { onMemoMove, onOpenDetail } = 
         openPreview(el, memo, onOpenDetail);
         openId = memo.id;
       },
+      getSize: () => memo.size,
+      onResize: (newSize) => {
+        el.style.width = `${getCircleDiameter(newSize)}px`;
+        el.style.height = `${getCircleDiameter(newSize)}px`;
+        el.style.fontSize = `${getTitleFontSize(newSize)}px`;
+      },
+      onResizeEnd: (finalSize) => onMemoResize?.(memo.id, finalSize),
     });
   });
 }

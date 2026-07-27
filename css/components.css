@@ -134,30 +134,3 @@
   color: var(--danger);
   border: 1.5px solid var(--danger);
 }
-
-/* ── 크기(중요도) 조절 원 ── */
-.size-picker {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 160px;
-  margin-bottom: 16px;
-}
-
-.size-picker__circle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background-color: var(--surface);
-  border: 1.5px solid var(--sky-200);
-  box-shadow: var(--card-shadow);
-  color: var(--ink-meta);
-  font-size: var(--fs-meta);
-  touch-action: none;
-  transition: width 0.15s ease, height 0.15s ease;
-}
-
-.size-picker__circle.dragging {
-  transition: none;
-}

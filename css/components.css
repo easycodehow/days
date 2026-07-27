@@ -1,0 +1,66 @@
+/* ============================================
+   components.css
+   메모 원(뭉게구름) · 버튼 · 태그 등 컴포넌트
+   ============================================ */
+
+/* ── 메모 원(뭉게구름) ── */
+.memo-circle {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 50%;
+  text-align: center;
+  background-color: var(--surface);
+  box-shadow: var(--card-shadow);
+  color: var(--ui-text-strong);
+  touch-action: none;
+  transform: translate(-50%, -50%);
+  animation: memo-float 7s ease-in-out infinite;
+}
+
+/* 실현된 메모: 실선 */
+.memo-circle--realized {
+  border: 1.5px solid var(--sky-200);
+}
+
+/* 실현되지 않은(예정) 메모: 점선 */
+.memo-circle--planned {
+  border: 1.5px dashed var(--sky-200);
+  background-color: var(--bg-soft);
+}
+
+/* 지난 날짜: 실선/점선 형태는 유지하고 색만 회색으로 흐림 */
+.memo-circle--past {
+  color: var(--ink-500);
+  border-color: var(--ink-200);
+  background-color: var(--card-line-soft);
+  opacity: 0.7;
+}
+
+.memo-circle__title {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-weight: 600;
+  line-height: 1.3;
+  word-break: keep-all;
+}
+
+/* 드래그 중에는 부유 애니메이션을 멈춘다 (js/ui/drag.js에서 토글 예정) */
+.memo-circle.dragging {
+  animation-play-state: paused;
+  transition: none;
+}
+
+@keyframes memo-float {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) translateY(0);
+  }
+  50% {
+    transform: translate(-50%, -50%) translateY(-8px);
+  }
+}

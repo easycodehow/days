@@ -1,0 +1,71 @@
+/* ============================================
+   layout.css
+   한줄 캘린더 · 메인 · 상세 레이아웃
+   ============================================ */
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+}
+
+/* ── 헤더: 한줄 캘린더 ── */
+.app-header {
+  flex: 0 0 auto;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--bg-soft);
+  border-bottom: 1px solid var(--line);
+}
+
+.calendar-bar {
+  display: flex;
+  overflow-x: auto;
+  gap: 4px;
+  padding: 10px 12px;
+  scrollbar-width: none;
+}
+
+.calendar-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.calendar-bar__item {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 40px;
+  padding: 6px 0;
+  border-radius: 12px;
+  color: var(--ui-text);
+}
+
+.calendar-bar__weekday {
+  font-size: 11px;
+}
+
+.calendar-bar__day {
+  font-size: var(--fs-subheading);
+  font-weight: 600;
+  color: var(--ui-text-strong);
+}
+
+.calendar-bar__item--today {
+  background-color: var(--accent);
+}
+
+.calendar-bar__item--today .calendar-bar__weekday,
+.calendar-bar__item--today .calendar-bar__day {
+  color: var(--btn-text);
+}
+
+/* ── 메인 화면 ── */
+.app-main {
+  position: relative;
+  flex: 1 1 auto;
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--bg) 0%, var(--bg-soft) 100%);
+}

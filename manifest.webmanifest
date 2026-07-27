@@ -1,0 +1,26 @@
+{
+  "name": "days",
+  "short_name": "days",
+  "description": "일별로 메모하는, 하늘에 떠다니는 뭉게구름 메모앱",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#E8F1FA",
+  "theme_color": "#1F3A54",
+  "lang": "ko",
+  "icons": [
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

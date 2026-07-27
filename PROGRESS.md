@@ -42,3 +42,53 @@
   - GitHub 원격 저장소 연결
   - 최초 커밋
 - 이후 2단계 "메인화면 디자인 초안 잡기"로 진행 가능
+
+---
+
+## 2026-07-27 (3)
+
+### 이번에 완료한 작업
+- 1단계 "Git 설정" 완료
+  - `.gitignore` 작성 (OS/에디터/배포/로그 파일 제외)
+  - `git init` (기본 브랜치 `master` → `main`으로 변경)
+  - 전역 git 사용자 설정: `user.name=easycode`, `user.email=easycodehow@gmail.com`
+  - 최초 커밋 (`000363f`, 14개 파일)
+  - GitHub 원격 저장소 연결: `https://github.com/easycodehow/days.git` (origin)
+  - `git push -u origin main` 완료 — GitHub에 초기 푸시 완료
+- `CLAUDE.md` 체크리스트 갱신 (Git 설정 3항목 체크, 1단계 전체 완료로 표시, 2026-07-27)
+- **1단계(프로젝트 기본 설정) 전체 완료**
+
+### 다음 작업 제안
+- 2단계 "메인화면 디자인 초안 잡기"로 진행
+  - "한줄 캘린더" 헤더 컴포넌트 (`js/ui/calendarBar.js`)
+  - 떠다니는 메모 원(뭉게구름) 레이아웃 (`js/views/mainView.js`)
+  - 중요도(size) → 원 크기 매핑
+  - 실선/점선(realized) · 회색(지난 날짜) 상태 표현
+- 착수 전 "시작"/"go" 승인 필요 (CLAUDE.md 작업 규칙).
+
+---
+
+## 2026-07-27 (4)
+
+### 이번에 완료한 작업
+- 2단계 "메인화면 디자인 초안 잡기" 구현 (코드 작성 + 1차 자동화 확인 완료, 2차 실기기 확인은 대기 중)
+  - `js/memo.js` (신규): 중요도(size)→원 지름/제목 폰트 크기 매핑, 지난 날짜 판정 헬퍼
+  - `js/ui/calendarBar.js` (신규): 오늘 중심 한줄 캘린더 헤더
+  - `js/views/mainView.js` (신규): 떠다니는 메모 원 렌더링 (실선/점선/회색/부유 애니메이션)
+  - `js/main.js` (신규): 엔트리, 임시 목업 데이터(`MOCK_MEMOS`)로 렌더링 — 실제 저장 연동은 "메모 저장/불러오기" 단계에서 `store.js`로 교체 예정
+  - `css/layout.css`, `css/components.css` (신규)
+  - 1차 확인: 로컬 정적 서버(`python -m http.server`) + 헤드리스 Chrome 스크린샷으로 렌더링 확인 — 크기/실선·점선/회색 규칙 정상 동작
+- 사용자 요청으로 "배포 후 홈화면 PWA 설치까지 확인"하는 방향으로 결정 → 2단계 "배포하기" + 3단계 "PWA 필수" 중 설치에 필요한 최소 항목을 함께 진행 (기능이 실제로 동작하려면 매니페스트+서비스워커가 필요하기 때문)
+  - `manifest.webmanifest` (신규): name/short_name/description/start_url/display:standalone/theme_color(#1F3A54)/background_color(#E8F1FA)/icons(192,512)
+  - `service-worker.js` (신규, 루트): 앱 셸 프리캐싱 + 캐시 우선 fetch 핸들러
+  - `index.html` (수정): manifest 링크, theme-color meta, apple-touch-icon 등 iOS/Android 설치 관련 태그 추가
+  - `js/main.js` (수정): 서비스워커 등록 코드 추가
+  - 1차 확인: 로컬 서버에서 manifest.webmanifest/service-worker.js 정상 서빙 + 페이지 렌더링 정상 확인
+- **Vercel CLI 미설치 상태** — 배포는 GitHub 연동(Vercel 대시보드에서 이 repo import)으로 진행 예정. 실제 배포·로그인은 사용자 액션 필요.
+
+### 다음 작업 제안
+- GitHub에 현재 변경사항 커밋·푸시
+- Vercel 대시보드에서 GitHub repo(`easycodehow/days`) 연결 및 배포 (사용자 액션 필요 — 로그인 등)
+- 배포 URL로 폰에서 접속 → "홈 화면에 추가"로 PWA 설치 → 실제 화면/설치 여부 2차 확인
+- 2차 확인 통과 후 CLAUDE.md 체크리스트(메인화면 디자인 초안, 배포하기, PWA 필수 manifest/service-worker/설치 확인 항목) 체크 예정
+- 이후 2단계 "원 드래그" 또는 "메모 저장/불러오기"로 진행 (다음 승인 필요)

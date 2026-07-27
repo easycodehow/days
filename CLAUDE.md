@@ -409,11 +409,11 @@ days/
 
 ### 원 드래그 (위치 이동)
 > 데이터의 `xPct`/`yPct` 필드와 저장 로직이 함께 걸리는 기능. UI·동작·저장을 한 번에 묶어 진행.
-- [ ] `js/ui/drag.js` — Pointer Events 기반 드래그 (마우스·터치·펜 공용)
-- [ ] `touch-action: none` + `setPointerCapture`로 모바일 드래그 안정화
-- [ ] `transform: translate`로 위치 갱신, 부유 애니메이션과 `.dragging` 클래스로 조율
-- [ ] 드래그 종료 시 `xPct`/`yPct` 계산 후 `store.save()`로 localStorage 반영
-- [ ] 탭(미리보기)과 드래그(이동) 임계값(약 6px)으로 구분
+- [x] `js/ui/drag.js` — Pointer Events 기반 드래그 (마우스·터치·펜 공용) (2026-07-27)
+- [x] `touch-action: none` + `setPointerCapture`로 모바일 드래그 안정화 (2026-07-27)
+- [x] `transform: translate`로 위치 갱신, 부유 애니메이션과 `.dragging` 클래스로 조율 (2026-07-27)
+- [x] 드래그 종료 시 `xPct`/`yPct` 계산 후 `store.save()`로 localStorage 반영 (2026-07-27)
+- [x] 탭(미리보기)과 드래그(이동) 임계값(약 6px)으로 구분 (2026-07-27)
 
 ### 배포하기 (초안 확인용)
 - [x] Vercel 프로젝트 연결 (2026-07-27)

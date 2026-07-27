@@ -184,3 +184,23 @@
 ### 다음 작업 제안
 - GitHub 푸시 → Vercel 배포 → 사용자 스모크 테스트(2차 확인)
 - 확인 후 2단계 "원 드래그" 진행 (다음 승인 필요) — `js/ui/drag.js`, Pointer Events 기반, `store.save()` 연동
+
+---
+
+## 2026-07-27 (10)
+
+### 이번에 완료한 작업
+- 사용자가 store.js 스모크 테스트 통과 후 "드래그가 안돼"라고 문의 → 아직 미구현 상태였음을 안내(다음 예정 기능이었음), 승인받아 진행
+- 2단계 "원 드래그(위치 이동)" 구현
+  - `js/ui/drag.js` (신규): Pointer Events(`pointerdown`/`pointermove`/`pointerup`/`pointercancel`) 기반 드래그, `setPointerCapture`, 6px 임계값으로 탭/드래그 구분, 드래그 종료 시 컨테이너 대비 %(`xPct`/`yPct`) 계산 후 `onDragEnd` 콜백 호출
+  - `js/views/mainView.js` (수정): 각 메모 원에 `makeDraggable` 연결, `onMemoMove` 콜백 전달받도록 시그니처 변경
+  - `js/main.js` (수정): `onMemoMove`에서 메모 배열 갱신 + `saveMemos()` 호출
+  - **버그 발견 및 수정**: `css/components.css`의 `.dragging`이 `animation-play-state: paused`를 쓰고 있었는데, 일시정지된 CSS 애니메이션은 멈춘 시점의 `transform` 값을 계속 우선 적용해서 JS가 드래그 중 바꾸는 인라인 `transform`이 화면에 반영되지 않는 문제 발견 → `animation: none`으로 수정해 해결
+  - `service-worker.js`: `APP_SHELL`에 `/js/ui/drag.js` 추가, 캐시 버전 `v6` → `v7`
+  - 1차 확인: Chrome DevTools Protocol로 실제 마우스 드래그 이벤트를 시뮬레이션 — 드래그 중 `.dragging` 클래스 적용, 드래그 종료 후 위치 갱신(62%→74%, 38%→43.9%) 및 `localStorage`에 동일 좌표로 저장까지 end-to-end 확인
+- `CLAUDE.md` 체크리스트 "원 드래그" 5항목 체크 완료(2026-07-27)
+- GitHub 푸시 → Vercel 배포 완료(`days-cache-v7` 라이브 확인) → 2차 확인(사용자 실기기, 터치 드래그) 대기 중
+
+### 다음 작업 제안
+- 사용자가 폰에서 실제 터치 드래그로 확인(2차 확인) — 자동화 테스트는 마우스 이벤트 기반이라 터치 특유의 이슈(예: 스크롤 충돌)는 실기기 확인이 특히 중요
+- 확인 후 2단계 "CRUD 기능"(메모 추가/미리보기/상세보기/수정/삭제) 또는 "검색 & 필터"로 진행 (다음 승인 필요)

@@ -47,7 +47,7 @@ export function renderDetailView(container, memo, { onSave, onDelete, onClose, s
 
   const saveBtn = document.createElement('button');
   saveBtn.type = 'button';
-  saveBtn.className = 'btn btn--amber';
+  saveBtn.className = 'btn btn--candy';
   saveBtn.textContent = '저장하기';
 
   let editing = false;

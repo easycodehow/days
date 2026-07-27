@@ -124,6 +124,11 @@
   color: var(--btn-text);
 }
 
+.btn--candy {
+  background-color: var(--candy-500);
+  color: #FFFFFF;
+}
+
 .btn--danger {
   background-color: var(--surface);
   color: var(--danger);

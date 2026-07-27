@@ -15,7 +15,7 @@
   position: sticky;
   top: 0;
   z-index: 10;
-  background-color: var(--bg-soft);
+  background-color: var(--sky-200);
   border-bottom: 1px solid var(--line);
 }
 

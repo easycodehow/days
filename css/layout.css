@@ -41,8 +41,8 @@
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background-color: var(--btn-bg);
-  color: var(--btn-text);
+  background-color: var(--candy-500);
+  color: #FFFFFF;
   font-size: 28px;
   font-weight: 700;
   line-height: 1;

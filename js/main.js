@@ -170,6 +170,18 @@ init();
 
 // 오프라인 캐싱을 위한 서비스워커 등록
 if ('serviceWorker' in navigator) {
+  // controllerchange는 "최초 설치로 컨트롤러가 생기는 순간"에도 발생하므로,
+  // 페이지 로드 시점에 이미 컨트롤러(이전 버전)가 있던 경우에만 새로고침한다.
+  // 그래야 최초 방문 때 불필요하게 한 번 더 새로고침되는 걸 막을 수 있다.
+  const hadController = !!navigator.serviceWorker.controller;
+  let refreshed = false;
+
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController || refreshed) return;
+    refreshed = true;
+    window.location.reload();
+  });
+
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/service-worker.js');
   });

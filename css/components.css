@@ -49,9 +49,10 @@
   word-break: keep-all;
 }
 
-/* 드래그 중에는 부유 애니메이션을 멈춘다 (js/ui/drag.js에서 토글 예정) */
+/* 드래그 중에는 부유 애니메이션을 끈다 — animation-play-state:paused는 멈춘 시점의
+   transform 값을 계속 우선 적용해 JS가 바꾸는 transform이 화면에 반영되지 않는다 */
 .memo-circle.dragging {
-  animation-play-state: paused;
+  animation: none;
   transition: none;
 }
 

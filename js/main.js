@@ -78,7 +78,17 @@ function init() {
   const main = document.createElement('main');
   main.className = 'app-main';
   app.appendChild(main);
-  renderMainView(main, getInitialMemos());
+
+  const memos = getInitialMemos();
+  renderMainView(main, memos, {
+    onMemoMove: (id, xPct, yPct) => {
+      const memo = memos.find((m) => m.id === id);
+      if (!memo) return;
+      memo.xPct = xPct;
+      memo.yPct = yPct;
+      saveMemos(memos);
+    },
+  });
 }
 
 init();

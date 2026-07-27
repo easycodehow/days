@@ -2,14 +2,21 @@
 // 메인화면 — 떠다니는 메모 원(뭉게구름) 렌더링
 
 import { getCircleDiameter, getTitleFontSize, isPastMemo } from '../memo.js';
+import { makeDraggable } from '../ui/drag.js';
 
 // 메모 배열을 컨테이너에 떠다니는 원으로 렌더링한다
-export function renderMainView(container, memos) {
+// onMemoMove(id, xPct, yPct)는 드래그로 위치가 바뀌었을 때 호출된다
+export function renderMainView(container, memos, { onMemoMove } = {}) {
   container.innerHTML = '';
   container.classList.add('main-view');
 
   memos.forEach((memo, index) => {
-    container.appendChild(createMemoCircle(memo, index));
+    const el = createMemoCircle(memo, index);
+    container.appendChild(el);
+
+    makeDraggable(el, container, {
+      onDragEnd: (xPct, yPct) => onMemoMove?.(memo.id, xPct, yPct),
+    });
   });
 }
 

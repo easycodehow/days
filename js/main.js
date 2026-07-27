@@ -3,6 +3,7 @@
 
 import { renderCalendarBar } from './ui/calendarBar.js';
 import { renderMainView } from './views/mainView.js';
+import { renderDetailView } from './views/detailView.js';
 import { loadMemos, saveMemos } from './store.js';
 
 // localStorage가 비어있을 때(최초 실행) 시드로 저장할 샘플 메모
@@ -75,20 +76,45 @@ function init() {
   header.appendChild(calendarBarContainer);
   renderCalendarBar(calendarBarContainer);
 
-  const main = document.createElement('main');
-  main.className = 'app-main';
-  app.appendChild(main);
+  const content = document.createElement('main');
+  app.appendChild(content);
 
   const memos = getInitialMemos();
-  renderMainView(main, memos, {
-    onMemoMove: (id, xPct, yPct) => {
-      const memo = memos.find((m) => m.id === id);
-      if (!memo) return;
-      memo.xPct = xPct;
-      memo.yPct = yPct;
-      saveMemos(memos);
-    },
-  });
+
+  function showMain() {
+    renderMainView(content, memos, {
+      onMemoMove: (id, xPct, yPct) => {
+        const memo = memos.find((m) => m.id === id);
+        if (!memo) return;
+        memo.xPct = xPct;
+        memo.yPct = yPct;
+        saveMemos(memos);
+      },
+      onOpenDetail: (id) => showDetail(id),
+    });
+  }
+
+  function showDetail(id) {
+    const memo = memos.find((m) => m.id === id);
+    if (!memo) return;
+
+    renderDetailView(content, memo, {
+      onClose: showMain,
+      onSave: (updated) => {
+        Object.assign(memo, updated);
+        saveMemos(memos);
+        showMain();
+      },
+      onDelete: (deleteId) => {
+        const index = memos.findIndex((m) => m.id === deleteId);
+        if (index !== -1) memos.splice(index, 1);
+        saveMemos(memos);
+        showMain();
+      },
+    });
+  }
+
+  showMain();
 }
 
 init();

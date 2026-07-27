@@ -7,6 +7,7 @@
 .memo-circle {
   position: absolute;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 10px;
@@ -64,4 +65,67 @@
   50% {
     transform: translate(-50%, -50%) translateY(-8px);
   }
+}
+
+/* 탭해서 열린(미리보기) 원 — 부유 애니메이션을 끄고 크기 전환에 트랜지션을 준다 */
+.memo-circle--open {
+  z-index: 5;
+  flex-direction: column;
+  animation: none;
+  transition: width 0.2s ease, height 0.2s ease;
+}
+
+.memo-circle__preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.memo-circle__excerpt {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--ink-sub);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.memo-circle__more {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: var(--btn-bg);
+  color: var(--btn-text);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+}
+
+/* ── 버튼 (상세보기 수정/삭제/저장하기 등) ── */
+.btn {
+  flex: 1;
+  padding: 12px 0;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: var(--fs-body);
+  text-align: center;
+}
+
+.btn--amber {
+  background-color: var(--btn-bg);
+  color: var(--btn-text);
+}
+
+.btn--danger {
+  background-color: var(--surface);
+  color: var(--danger);
+  border: 1.5px solid var(--danger);
 }

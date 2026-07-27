@@ -73,6 +73,11 @@ button:disabled {
   opacity: 0.5;
 }
 
+/* JS 상태 토글용 유틸리티 — 항상 우선 적용되어야 하므로 !important 사용 */
+.is-hidden {
+  display: none !important;
+}
+
 /* 키보드 접근성 — 포커스 링 */
 :focus-visible {
   outline: 2px solid var(--focus-ring);

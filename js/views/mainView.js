@@ -4,11 +4,16 @@
 import { getCircleDiameter, getTitleFontSize, isPastMemo } from '../memo.js';
 import { makeDraggable } from '../ui/drag.js';
 
+const PREVIEW_DIAMETER = 180;
+
 // 메모 배열을 컨테이너에 떠다니는 원으로 렌더링한다
-// onMemoMove(id, xPct, yPct)는 드래그로 위치가 바뀌었을 때 호출된다
-export function renderMainView(container, memos, { onMemoMove } = {}) {
+// onMemoMove(id, xPct, yPct): 드래그로 위치가 바뀌었을 때 호출
+// onOpenDetail(id): 미리보기의 "+" 버튼을 눌렀을 때 호출
+export function renderMainView(container, memos, { onMemoMove, onOpenDetail } = {}) {
+  container.className = 'app-main main-view';
   container.innerHTML = '';
-  container.classList.add('main-view');
+
+  let openId = null;
 
   memos.forEach((memo, index) => {
     const el = createMemoCircle(memo, index);
@@ -16,6 +21,19 @@ export function renderMainView(container, memos, { onMemoMove } = {}) {
 
     makeDraggable(el, container, {
       onDragEnd: (xPct, yPct) => onMemoMove?.(memo.id, xPct, yPct),
+      onTap: () => {
+        if (openId === memo.id) {
+          closePreview(el);
+          openId = null;
+          return;
+        }
+        if (openId) {
+          const openEl = container.querySelector(`[data-id="${openId}"]`);
+          if (openEl) closePreview(openEl);
+        }
+        openPreview(el, memo, onOpenDetail);
+        openId = memo.id;
+      },
     });
   });
 }
@@ -46,4 +64,40 @@ function createMemoCircle(memo, index) {
   el.appendChild(title);
 
   return el;
+}
+
+// 원을 확대해 본문 미리보기 + "+" 버튼을 보여준다
+function openPreview(el, memo, onOpenDetail) {
+  el.dataset.baseWidth = el.style.width;
+  el.dataset.baseHeight = el.style.height;
+  el.style.width = `${PREVIEW_DIAMETER}px`;
+  el.style.height = `${PREVIEW_DIAMETER}px`;
+  el.classList.add('memo-circle--open');
+
+  const preview = document.createElement('div');
+  preview.className = 'memo-circle__preview';
+
+  const excerpt = document.createElement('p');
+  excerpt.className = 'memo-circle__excerpt';
+  excerpt.textContent = memo.content;
+  preview.appendChild(excerpt);
+
+  const moreBtn = document.createElement('button');
+  moreBtn.type = 'button';
+  moreBtn.className = 'memo-circle__more';
+  moreBtn.textContent = '+';
+  // 버튼 조작이 원의 드래그 로직으로 번지지 않도록 막는다
+  moreBtn.addEventListener('pointerdown', (event) => event.stopPropagation());
+  moreBtn.addEventListener('click', () => onOpenDetail?.(memo.id));
+  preview.appendChild(moreBtn);
+
+  el.appendChild(preview);
+}
+
+// 미리보기를 닫고 원래 크기로 되돌린다
+function closePreview(el) {
+  el.style.width = el.dataset.baseWidth ?? el.style.width;
+  el.style.height = el.dataset.baseHeight ?? el.style.height;
+  el.classList.remove('memo-circle--open');
+  el.querySelector('.memo-circle__preview')?.remove();
 }

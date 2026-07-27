@@ -1,7 +1,9 @@
 // service-worker.js
 // 오프라인 캐싱 — 앱 셸(app shell) 프리캐싱 후 캐시 우선 응답
 
-const CACHE_NAME = 'days-cache-v1';
+// 앱 셸 파일이 바뀔 때마다 버전을 올려야 한다 — service-worker.js 자체 바이트가 그대로면
+// 브라우저가 "변경 없음"으로 보고 재설치를 건너뛰어 캐시가 갱신되지 않는다.
+const CACHE_NAME = 'days-cache-v2';
 
 const APP_SHELL = [
   '/',

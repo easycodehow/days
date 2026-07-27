@@ -19,6 +19,14 @@
   border-bottom: 1px solid var(--line);
 }
 
+.app-header__brand {
+  padding: 12px 12px 0;
+  font-size: var(--fs-heading);
+  font-weight: 700;
+  color: var(--heading);
+  text-align: left;
+}
+
 .calendar-bar {
   display: flex;
   overflow-x: auto;

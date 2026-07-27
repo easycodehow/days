@@ -54,7 +54,16 @@ function init() {
   const header = document.createElement('header');
   header.className = 'app-header';
   app.appendChild(header);
-  renderCalendarBar(header);
+
+  const brand = document.createElement('div');
+  brand.className = 'app-header__brand';
+  brand.textContent = 'days';
+  header.appendChild(brand);
+
+  // renderCalendarBar가 컨테이너 innerHTML을 초기화하므로 header가 아닌 하위 컨테이너를 넘긴다
+  const calendarBarContainer = document.createElement('div');
+  header.appendChild(calendarBarContainer);
+  renderCalendarBar(calendarBarContainer);
 
   const main = document.createElement('main');
   main.className = 'app-main';

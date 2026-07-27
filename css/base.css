@@ -1,0 +1,86 @@
+/* ============================================
+   base.css
+   리셋 · 전역 기본 스타일
+   ============================================ */
+
+/* ── 리셋 ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* ── 전역 기본 스타일 ── */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--fs-body);
+  line-height: var(--line-height-base);
+  background-color: var(--bg);
+  color: var(--ink);
+  overscroll-behavior: none;
+}
+
+/* 본문 텍스트: 잉크 / UI 텍스트: 하늘색 계열 */
+h1,
+h2,
+h3 {
+  color: var(--heading);
+  font-weight: 700;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* 키보드 접근성 — 포커스 링 */
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* 스크롤바 여백 확보 (모바일 오버플로우 대비) */
+#app {
+  min-height: 100dvh;
+  overflow-x: hidden;
+}

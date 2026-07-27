@@ -1,0 +1,94 @@
+/* ============================================
+   variables.css
+   컬러·타이포 CSS 변수 (라이트/다크)
+   ⚠️ 팔레트 변수명·값은 컬러칩 원본 그대로 — 임의 변경 금지
+   ============================================ */
+
+:root {
+  /* ── 팔레트 (컬러칩 원본, 변경 금지) ── */
+
+  /* 배경 & 카드 */
+  --sky-25: #F4F8FC;
+  --sky-bg: #E8F1FA;
+  --sky-75: #D8E7F5;
+  --card: #FFFFFF;
+
+  /* 하늘 · 텍스트 */
+  --sky-900: #16283A;
+  --sky-800: #1F3A54;
+  --sky-deep: #1F3244;
+  --sky-700: #2F5375;
+  --sky-600: #416B94;
+  --sky-sub: #5D6E7E;
+  --sky-500: #5A83AC;
+
+  /* 하늘 · 구분선 */
+  --sky-200: #B2CDE6;
+  --sky-150: #CBDEEF;
+  --sky-100: #DCE9F5;
+  --card-line: #E3EAF2;
+  --card-line-soft: #EDF2F7;
+
+  /* 중립 잉크 */
+  --ink-900: #23282E;
+  --ink-700: #55606C;
+  --ink-500: #64707E;
+  --ink-200: #E3E8ED;
+
+  /* 포인트 · 앰버 */
+  --amber-900: #4A2E05;
+  --amber-700: #7A4E0C;
+  --amber-500: #E8A33A;
+  --amber-300: #F0A93C;
+  --amber-50: #FBEEDA;
+
+  /* 예외 */
+  --danger: #D93A3A;
+
+  /* 그림자 */
+  --card-shadow: 0 1px 3px rgba(38, 90, 140, 0.08);
+
+  /* ── 역할 변수 (컴포넌트는 이것만 참조) ── */
+  --bg: var(--sky-bg);
+  --bg-soft: var(--sky-25);
+  --surface: var(--card);
+  --row-selected: var(--sky-75);
+  --line: var(--sky-100);
+  --line-strong: var(--card-line);
+  --ui-text: var(--sky-600);
+  --ui-text-strong: var(--sky-900);
+  --heading: var(--sky-800);
+  --ink: var(--ink-900);
+  --ink-sub: var(--ink-700);
+  --ink-meta: var(--ink-500);
+  --ink-disabled: var(--ink-200);
+  --accent: var(--amber-500);
+  --btn-bg: var(--amber-300);
+  --btn-text: var(--amber-900);
+  --tag-bg: var(--amber-50);
+  --tag-text: var(--amber-700);
+  --focus-ring: var(--sky-500);
+
+  /* ── 타이포그래피 ── */
+  --font-family: "Pretendard", -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --fs-heading: 20px;
+  --fs-subheading: 16px;
+  --fs-body: 15px;
+  --fs-meta: 13px;
+  --line-height-base: 1.6;
+}
+
+/* 다크모드 — 제안값, 역할 변수만 재정의 (3단계에서 실기기 확인 후 최종 확정) */
+[data-theme="dark"] {
+  --bg: #0E1A26;
+  --bg-soft: #122334;
+  --surface: #182B3D;
+  --row-selected: #20374C;
+  --line: #243B52;
+  --line-strong: #2E4A63;
+  --ui-text: #B7CBDE;
+  --ui-text-strong: #DDE9F4;
+  --heading: #DDE9F4;
+  --ink: #E3E8ED;
+  --ink-sub: #A5B0BC;
+}

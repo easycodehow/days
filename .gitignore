@@ -1,0 +1,13 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# 에디터
+.vscode/
+.idea/
+
+# 배포
+.vercel/
+
+# 로그
+*.log

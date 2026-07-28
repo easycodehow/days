@@ -1,6 +1,9 @@
 // js/ui/drag.js
 // 메모 원 드래그(이동) + 두 손가락 핀치(크기 조절) — Pointer Events 기반 (마우스·터치·펜 공용)
 
+// 임시 디버그 로그 — 실기기 핀치 원인 진단 후 제거 예정
+import { logDebug } from './debugOverlay.js';
+
 const TAP_THRESHOLD_PX = 6;
 const PX_PER_STEP = 15; // 핀치: 손가락 사이 거리가 이만큼 변해야 한 단계 변한다
 
@@ -37,14 +40,18 @@ export function makeDraggable(el, container, { onDragEnd, onTap, getSize, onResi
   // 시작하고, 이미 원 위에서 첫 손가락을 추적 중이면 두 번째 손가락은 화면 어디에
   // 닿든 핀치로 인식한다.
   function handlePointerDown(event) {
+    // 이 원과 무관한 터치(다른 원/배경에서 시작한, 이 원이 추적 중이 아닌 손가락)는
+    // 로그 없이 조용히 무시 — 그래야 실제 핀치 제스처 로그가 다른 원들의 잡음에 묻히지 않는다.
     if (pointers.size === 0) {
       if (!el.contains(event.target)) return;
+      logDebug(`DOWN(1번째) id=${event.pointerId} type=${event.pointerType} target="${event.target.className || event.target.tagName}"`);
       startX = event.clientX;
       startY = event.clientY;
       baseLeftPct = parseFloat(el.style.left);
       baseTopPct = parseFloat(el.style.top);
       dragging = false;
     } else if (pointers.size === 1) {
+      logDebug(`DOWN(2번째) id=${event.pointerId} type=${event.pointerType} target="${event.target.className || event.target.tagName}"`);
       // 이동 중이었다면 취소하고 핀치로 전환
       if (dragging) {
         el.style.transform = '';
@@ -52,19 +59,24 @@ export function makeDraggable(el, container, { onDragEnd, onTap, getSize, onResi
         dragging = false;
       }
     } else {
+      logDebug(`  -> 무시(세 번째 손가락)`);
       return; // 세 번째 손가락은 무시
     }
 
     el.setPointerCapture?.(event.pointerId);
     pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    logDebug(`  -> 추적 시작, size(후)=${pointers.size}`);
 
     if (pointers.size === 2) {
       pinchStartDist = pinchDistance();
       pinchStartSize = getSize?.() ?? 3;
       currentPinchSize = pinchStartSize;
       didPinch = true;
+      logDebug(`  -> 핀치 모드 진입! 시작거리=${pinchStartDist.toFixed(1)} 시작크기=${pinchStartSize}`);
     }
   }
+
+  let lastMoveLogAt = 0;
 
   function handlePointerMove(event) {
     if (!pointers.has(event.pointerId)) return;
@@ -74,6 +86,11 @@ export function makeDraggable(el, container, { onDragEnd, onTap, getSize, onResi
       const dist = pinchDistance();
       const stepDelta = Math.round((dist - pinchStartDist) / PX_PER_STEP);
       currentPinchSize = clamp(pinchStartSize + stepDelta, 1, 5);
+      const now = performance.now();
+      if (now - lastMoveLogAt > 150) {
+        lastMoveLogAt = now;
+        logDebug(`MOVE(핀치) dist=${dist.toFixed(1)} size=${currentPinchSize}`);
+      }
       onResize?.(currentPinchSize);
       return;
     }
@@ -95,6 +112,8 @@ export function makeDraggable(el, container, { onDragEnd, onTap, getSize, onResi
 
   function handlePointerUp(event) {
     if (!pointers.has(event.pointerId)) return;
+
+    logDebug(`${event.type.toUpperCase()} id=${event.pointerId} size(전)=${pointers.size}`);
 
     const wasPinching = pointers.size >= 2;
     pointers.delete(event.pointerId);

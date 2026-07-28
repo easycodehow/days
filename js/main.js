@@ -6,6 +6,8 @@ import { renderMainView } from './views/mainView.js';
 import { renderDetailView } from './views/detailView.js';
 import { loadMemos, saveMemos } from './store.js';
 import { formatDate } from './memo.js';
+// 임시 디버그 로그 — 실기기 핀치 원인 진단 후 제거 예정
+import { initDebugOverlay } from './ui/debugOverlay.js';
 
 // localStorage가 비어있을 때(최초 실행) 시드로 저장할 샘플 메모
 const SEED_MEMOS = [
@@ -79,6 +81,8 @@ function createDraftMemo(date) {
 }
 
 function init() {
+  initDebugOverlay();
+
   const app = document.getElementById('app');
 
   const header = document.createElement('header');

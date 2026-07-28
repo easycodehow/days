@@ -2,7 +2,7 @@
 // 메모 원 드래그(이동) + 두 손가락 핀치(크기 조절) — Pointer Events 기반 (마우스·터치·펜 공용)
 
 const TAP_THRESHOLD_PX = 6;
-const PX_PER_STEP = 40; // 핀치: 손가락 사이 거리가 이만큼 변해야 한 단계 변한다
+const PX_PER_STEP = 28; // 핀치: 손가락 사이 거리가 이만큼 변해야 한 단계 변한다
 
 // el을 container 안에서 드래그로 옮기고, 두 손가락으로 꼬집어 크기를 조절할 수 있게 만든다.
 // el.style.left/top은 container 대비 %로 지정돼 있어야 한다.

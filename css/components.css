@@ -114,8 +114,8 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background-color: var(--btn-bg);
-  color: var(--btn-text);
+  background-color: var(--sky-600);
+  color: #FFFFFF;
   font-size: 16px;
   font-weight: 700;
   line-height: 1;
@@ -188,6 +188,11 @@
 .btn--amber {
   background-color: var(--btn-bg);
   color: var(--btn-text);
+}
+
+.btn--blue {
+  background-color: var(--sky-600);
+  color: #FFFFFF;
 }
 
 .btn--candy {

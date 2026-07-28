@@ -78,7 +78,7 @@ export function renderDetailView(container, memo, { onSave, onDelete, onClose, s
 
   const editBtn = document.createElement('button');
   editBtn.type = 'button';
-  editBtn.className = 'btn btn--amber';
+  editBtn.className = 'btn btn--blue';
   editBtn.textContent = '수정';
 
   const deleteBtn = document.createElement('button');

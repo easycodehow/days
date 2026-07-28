@@ -19,6 +19,8 @@
   touch-action: none;
   transform: translate(-50%, -50%);
   animation: memo-float 7s ease-in-out infinite;
+  /* 핀치로 크기(중요도) 단계가 바뀔 때 스냅되지 않고 부드럽게 전환되도록 */
+  transition: width 0.15s ease, height 0.15s ease, font-size 0.15s ease;
 }
 
 /* 실현된 메모: 실선 */

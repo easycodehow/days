@@ -52,6 +52,19 @@
   box-shadow: 0 2px 8px rgba(38, 90, 140, 0.25);
 }
 
+.calendar-bar-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 고정 월 헤더 — 날짜 줄을 가로로 스크롤하면 지금 보이는 날짜의 연월로 바뀐다 */
+.calendar-bar__month-label {
+  padding: 4px 12px 0;
+  font-size: var(--fs-meta);
+  font-weight: 700;
+  color: var(--ui-text);
+}
+
 .calendar-bar {
   display: flex;
   overflow-x: auto;

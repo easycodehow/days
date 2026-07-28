@@ -25,18 +25,18 @@
 
 /* 확정된 메모: 실선 */
 .memo-circle--confirmed {
-  border: 1.5px solid var(--sky-200);
+  border: 7.5px solid var(--sky-200);
 }
 
 /* 생각중인 메모: 점선 */
 .memo-circle--thinking {
-  border: 1.5px dashed var(--sky-200);
+  border: 7.5px dashed var(--sky-200);
   background-color: var(--bg-soft);
 }
 
 /* 가능성 없는 메모: 회색 채움 */
 .memo-circle--unlikely {
-  border: 1.5px solid var(--ink-500);
+  border: 7.5px solid var(--ink-500);
   background-color: var(--ink-200);
 }
 

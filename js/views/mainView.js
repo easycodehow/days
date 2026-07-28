@@ -17,12 +17,18 @@ export function renderMainView(container, memos, { onMemoMove, onOpenDetail, onM
   container.innerHTML = '';
 
   let openId = null;
+  // 원을 터치할 때마다 값을 올려서 그 원의 z-index로 지정 — 마지막으로 건드린 원이 항상 맨 위로 온다
+  let topZIndex = 10;
 
   memos.forEach((memo, index) => {
     const el = createMemoCircle(memo, index);
     container.appendChild(el);
 
     makeDraggable(el, container, {
+      onActivate: () => {
+        topZIndex += 1;
+        el.style.zIndex = topZIndex;
+      },
       onDragEnd: (xPct, yPct) => onMemoMove?.(memo.id, xPct, yPct),
       onTap: () => {
         if (openId === memo.id) {

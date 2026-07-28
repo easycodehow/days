@@ -7,11 +7,14 @@ const WEEKDAY_KO = ['일', '월', '화', '수', '목', '금', '토'];
 
 // 오늘을 중심으로 한 줄 캘린더 헤더를 렌더링한다
 // selectedDate: 현재 선택된 날짜(YYYY-MM-DD), onSelectDate(dateStr): 날짜를 탭했을 때 호출
-export function renderCalendarBar(container, { centerDate = new Date(), rangeDays = 7, selectedDate, onSelectDate } = {}) {
+// rangeDays=182 → 오늘 기준 앞뒤로 약 6개월씩, 총 1년치 날짜를 보여줌(가로 스크롤)
+export function renderCalendarBar(container, { centerDate = new Date(), rangeDays = 182, selectedDate, onSelectDate } = {}) {
   container.innerHTML = '';
   container.className = 'calendar-bar';
 
   const todayStr = formatDate(new Date());
+  let selectedEl = null;
+  let todayEl = null;
 
   for (let offset = -rangeDays; offset <= rangeDays; offset++) {
     const date = new Date(centerDate);
@@ -36,5 +39,12 @@ export function renderCalendarBar(container, { centerDate = new Date(), rangeDay
 
     item.append(weekday, day);
     container.appendChild(item);
+
+    if (dateStr === todayStr) todayEl = item;
+    if (dateStr === selectedDate) selectedEl = item;
   }
+
+  // 날짜가 1년치라 매번 맨 앞(1년 전)부터 스크롤해야 하면 불편하므로,
+  // 선택된 날짜(없으면 오늘)가 바로 보이도록 자동으로 스크롤한다.
+  (selectedEl ?? todayEl)?.scrollIntoView({ inline: 'center', block: 'nearest' });
 }

@@ -12,7 +12,9 @@ const PX_PER_STEP = 28; // 핀치: 손가락 사이 거리가 이만큼 변해�
 // onResize(size): 핀치 중 실시간으로 호출 — 화면에 즉시 반영
 // onResizeEnd(size): 핀치가 끝났을 때 호출 — 저장 등 마무리 처리
 // onActivate(): 이 원을 처음 터치하는 순간(탭/드래그/핀치 모두) 호출 — 맨 위로 올리는 용도
-export function makeDraggable(el, container, { onDragEnd, onTap, getSize, onResize, onResizeEnd, onActivate } = {}) {
+// onDeactivate(): 마지막 손가락을 뗀 순간(제스처 완전히 종료) 호출 — 배경 패닝과의 충돌 방지용
+// xPctRange([min, max]): 드래그로 이동 가능한 xPct 범위 — 기본은 화면 안(0~100)
+export function makeDraggable(el, container, { onDragEnd, onTap, getSize, onResize, onResizeEnd, onActivate, onDeactivate, xPctRange = [0, 100] } = {}) {
   const pointers = new Map(); // pointerId -> {x, y}
 
   let startX = 0;
@@ -109,6 +111,8 @@ export function makeDraggable(el, container, { onDragEnd, onTap, getSize, onResi
 
     if (pointers.size > 0) return;
 
+    onDeactivate?.();
+
     if (didPinch) {
       didPinch = false;
       return;
@@ -123,7 +127,8 @@ export function makeDraggable(el, container, { onDragEnd, onTap, getSize, onResi
     const dy = event.clientY - startY;
     const rect = container.getBoundingClientRect();
 
-    const xPct = clamp(baseLeftPct + (dx / rect.width) * 100, 0, 100);
+    const [xMin, xMax] = xPctRange;
+    const xPct = clamp(baseLeftPct + (dx / rect.width) * 100, xMin, xMax);
     const yPct = clamp(baseTopPct + (dy / rect.height) * 100, 0, 100);
 
     el.style.left = `${xPct}%`;

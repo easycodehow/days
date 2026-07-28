@@ -8,6 +8,11 @@ import { makeDraggable } from '../ui/drag.js';
 // 방식이라야, 이미 큰 원(예: 최대 중요도)을 탭했을 때 오히려 작아지는 문제가 생기지 않는다.
 const PREVIEW_EXTRA_PX = 60;
 
+// "홈 화면"(원래 xPct 0~100% 범위) 기준으로 좌우 얼마나 더 넓게 원을 두고 화면을 밀 수 있는지.
+// 실제 DOM 크기를 키우는 게 아니라 좌표 한계값이라 성능에는 영향 없음 — "최대한 넓게" 요청에
+// 따라 넉넉하게(화면 폭의 약 50배) 잡는다.
+const PAN_RANGE_PCT = 5000;
+
 // 메모 배열을 컨테이너에 떠다니는 원으로 렌더링한다
 // onMemoMove(id, xPct, yPct): 드래그로 위치가 바뀌었을 때 호출
 // onOpenDetail(id): 미리보기의 "+" 버튼을 눌렀을 때 호출
@@ -16,18 +21,31 @@ export function renderMainView(container, memos, { onMemoMove, onOpenDetail, onM
   container.className = 'app-main main-view';
   container.innerHTML = '';
 
+  // 원들은 이 캔버스 레이어의 자식으로 배치된다. 캔버스 자체는 화면과 같은 폭이지만
+  // overflow:visible이라 xPct가 0~100%를 벗어난 자식도 잘리지 않고 그 자리에 그려지고,
+  // 바깥 .app-main(overflow:hidden)이 화면에 보이는 부분만 잘라서 보여준다.
+  const canvas = document.createElement('div');
+  canvas.className = 'main-view-canvas';
+  container.appendChild(canvas);
+
   let openId = null;
   // 원을 터치할 때마다 값을 올려서 그 원의 z-index로 지정 — 마지막으로 건드린 원이 항상 맨 위로 온다
   let topZIndex = 10;
+  // 원을 만지는 중(드래그/핀치)에는 배경 패닝이 함께 발생하지 않도록 막는 카운터
+  let activeCircleCount = 0;
 
   memos.forEach((memo, index) => {
     const el = createMemoCircle(memo, index);
-    container.appendChild(el);
+    canvas.appendChild(el);
 
-    makeDraggable(el, container, {
+    makeDraggable(el, canvas, {
       onActivate: () => {
+        activeCircleCount += 1;
         topZIndex += 1;
         el.style.zIndex = topZIndex;
+      },
+      onDeactivate: () => {
+        activeCircleCount = Math.max(0, activeCircleCount - 1);
       },
       onDragEnd: (xPct, yPct) => onMemoMove?.(memo.id, xPct, yPct),
       onTap: () => {
@@ -37,7 +55,7 @@ export function renderMainView(container, memos, { onMemoMove, onOpenDetail, onM
           return;
         }
         if (openId) {
-          const openEl = container.querySelector(`[data-id="${openId}"]`);
+          const openEl = canvas.querySelector(`[data-id="${openId}"]`);
           if (openEl) closePreview(openEl);
         }
         openPreview(el, memo, onOpenDetail);
@@ -50,8 +68,61 @@ export function renderMainView(container, memos, { onMemoMove, onOpenDetail, onM
         el.style.fontSize = `${getTitleFontSize(newSize)}px`;
       },
       onResizeEnd: (finalSize) => onMemoResize?.(memo.id, finalSize),
+      xPctRange: [-PAN_RANGE_PCT, 100 + PAN_RANGE_PCT],
     });
   });
+
+  makePannable(container, canvas, PAN_RANGE_PCT, () => activeCircleCount);
+}
+
+// 배경을 한 손가락으로 좌우로 끌면 캔버스 전체가 이동(패닝)한다.
+// viewportEl: 화면에 보이는 고정 영역(.app-main, overflow:hidden)
+// canvasEl: 실제로 이동시킬 원 레이어
+// getActiveCircleCount(): 지금 어떤 원이든 드래그/핀치 중이면 0보다 큰 값 — 그동안은 패닝 무시
+function makePannable(viewportEl, canvasEl, panRangePct, getActiveCircleCount) {
+  const PAN_TAP_THRESHOLD_PX = 6;
+  const pointers = new Map();
+  let panX = 0;
+  let startClientX = 0;
+  let startPanX = 0;
+  let dragging = false;
+
+  function handlePointerDown(event) {
+    if (getActiveCircleCount() > 0) return; // 원을 만지는 중이면 배경 패닝 시작 안 함
+    if (event.target.closest('.memo-circle')) return; // 원 위에서 시작한 터치는 원 쪽에서 처리
+    if (pointers.size > 0) return; // 패닝은 한 손가락만 처리
+    pointers.set(event.pointerId, true);
+    startClientX = event.clientX;
+    startPanX = panX;
+    dragging = false;
+  }
+
+  function handlePointerMove(event) {
+    if (!pointers.has(event.pointerId)) return;
+    if (getActiveCircleCount() > 0) return; // 패닝 도중 원 조작이 시작되면 더 이상 움직이지 않음
+
+    const dx = event.clientX - startClientX;
+    if (!dragging && Math.abs(dx) < PAN_TAP_THRESHOLD_PX) return;
+    dragging = true;
+
+    const rect = viewportEl.getBoundingClientRect();
+    const maxAbsPan = (panRangePct / 100) * rect.width;
+    panX = clampPan(startPanX + dx, -maxAbsPan, maxAbsPan);
+    canvasEl.style.transform = `translateX(${panX}px)`;
+  }
+
+  function handlePointerUp(event) {
+    pointers.delete(event.pointerId);
+  }
+
+  viewportEl.addEventListener('pointerdown', handlePointerDown);
+  document.addEventListener('pointermove', handlePointerMove);
+  document.addEventListener('pointerup', handlePointerUp);
+  document.addEventListener('pointercancel', handlePointerUp);
+}
+
+function clampPan(value, min, max) {
+  return Math.min(max, Math.max(min, value));
 }
 
 function createMemoCircle(memo, index) {

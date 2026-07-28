@@ -1,11 +1,11 @@
 // js/memo.js
 // 메모 모델 · 상태 판정 헬퍼
 
-// 중요도(size 1~5) → 원 지름(px) 매핑
-const CIRCLE_SIZE_PX = { 1: 72, 2: 90, 3: 108, 4: 126, 5: 144 };
+// 중요도(size 1~5) → 원 지름(px) 매핑. 최대치(5)는 화면을 넘칠 만큼 크게 잡는다.
+const CIRCLE_SIZE_PX = { 1: 80, 2: 160, 3: 260, 4: 380, 5: 520 };
 
 // 중요도(size 1~5) → 원 안 제목 글자 크기(px) 매핑
-const TITLE_FONT_PX = { 1: 13, 2: 14, 3: 15, 4: 16.5, 5: 18 };
+const TITLE_FONT_PX = { 1: 13, 2: 15, 3: 18, 4: 21, 5: 26 };
 
 // 중요도(size)에 대응하는 원 지름(px)을 반환한다
 export function getCircleDiameter(size) {

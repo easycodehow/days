@@ -4,7 +4,9 @@
 import { getCircleDiameter, getTitleFontSize, isPastMemo } from '../memo.js';
 import { makeDraggable } from '../ui/drag.js';
 
-const PREVIEW_DIAMETER = 180;
+// 미리보기로 커질 때 원래 크기보다 얼마나 더 커질지 — 고정값이 아니라 원래 크기에 더하는
+// 방식이라야, 이미 큰 원(예: 최대 중요도)을 탭했을 때 오히려 작아지는 문제가 생기지 않는다.
+const PREVIEW_EXTRA_PX = 60;
 
 // 메모 배열을 컨테이너에 떠다니는 원으로 렌더링한다
 // onMemoMove(id, xPct, yPct): 드래그로 위치가 바뀌었을 때 호출
@@ -78,8 +80,9 @@ function createMemoCircle(memo, index) {
 function openPreview(el, memo, onOpenDetail) {
   el.dataset.baseWidth = el.style.width;
   el.dataset.baseHeight = el.style.height;
-  el.style.width = `${PREVIEW_DIAMETER}px`;
-  el.style.height = `${PREVIEW_DIAMETER}px`;
+  const previewDiameter = getCircleDiameter(memo.size) + PREVIEW_EXTRA_PX;
+  el.style.width = `${previewDiameter}px`;
+  el.style.height = `${previewDiameter}px`;
   el.classList.add('memo-circle--open');
 
   const preview = document.createElement('div');

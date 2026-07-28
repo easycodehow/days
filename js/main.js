@@ -6,8 +6,6 @@ import { renderMainView } from './views/mainView.js';
 import { renderDetailView } from './views/detailView.js';
 import { loadMemos, saveMemos } from './store.js';
 import { formatDate } from './memo.js';
-// 임시 디버그 로그 — 실기기 핀치 원인 진단 후 제거 예정
-import { initDebugOverlay } from './ui/debugOverlay.js';
 
 // localStorage가 비어있을 때(최초 실행) 시드로 저장할 샘플 메모
 const SEED_MEMOS = [
@@ -80,9 +78,17 @@ function createDraftMemo(date) {
   };
 }
 
-function init() {
-  initDebugOverlay();
+// 두 손가락 이상 제스처는 화면 확대/축소가 아니라 오직 메모 원 크기 조절에만 쓰인다.
+// 원 바깥에서 잘못 건드려도 브라우저 자체의 페이지 확대가 절대 일어나지 않도록 원천 차단한다.
+document.addEventListener(
+  'touchmove',
+  (event) => {
+    if (event.touches.length > 1) event.preventDefault();
+  },
+  { passive: false }
+);
 
+function init() {
   const app = document.getElementById('app');
 
   const header = document.createElement('header');

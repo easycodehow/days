@@ -138,6 +138,13 @@
   border-bottom: 1px solid var(--line-strong);
 }
 
+/* 수정 전(읽기 전용) 제목 — 길게 눌러도 선택/사전 찾기 팝업이 뜨지 않도록 */
+.detail-view__title {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
 .detail-view__content,
 .detail-view__content-input {
   display: block;
@@ -145,6 +152,13 @@
   color: var(--ink);
   line-height: var(--line-height-base);
   white-space: pre-wrap;
+}
+
+/* 수정 전(읽기 전용) 본문 — 길게 눌러도 선택/사전 찾기 팝업이 뜨지 않도록 */
+.detail-view__content {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .detail-view__content-input {

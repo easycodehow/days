@@ -30,31 +30,43 @@ export function makeDraggable(el, container, { onDragEnd, onTap, getSize, onResi
     return Math.hypot(a.x - b.x, a.y - b.y);
   }
 
-  el.addEventListener('pointerdown', (event) => {
-    el.setPointerCapture(event.pointerId);
-    pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
-
-    if (pointers.size === 1) {
+  // 핀치는 두 손가락이 서로 벌어지는 동작이라, 두 번째 손가락이 원(el)의 좁은 영역
+  // 바깥(배경)에 닿는 경우가 흔하다. pointerdown을 el에만 걸면 그 두 번째 손가락의
+  // pointerdown이 el까지 전달되지 않아 핀치 자체가 감지되지 않는다.
+  // 그래서 리스너는 document에 걸되, 첫 손가락은 반드시 원 위에서 시작해야 추적을
+  // 시작하고, 이미 원 위에서 첫 손가락을 추적 중이면 두 번째 손가락은 화면 어디에
+  // 닿든 핀치로 인식한다.
+  function handlePointerDown(event) {
+    if (pointers.size === 0) {
+      if (!el.contains(event.target)) return;
       startX = event.clientX;
       startY = event.clientY;
       baseLeftPct = parseFloat(el.style.left);
       baseTopPct = parseFloat(el.style.top);
       dragging = false;
-    } else if (pointers.size === 2) {
+    } else if (pointers.size === 1) {
       // 이동 중이었다면 취소하고 핀치로 전환
       if (dragging) {
         el.style.transform = '';
         el.classList.remove('dragging');
         dragging = false;
       }
+    } else {
+      return; // 세 번째 손가락은 무시
+    }
+
+    el.setPointerCapture?.(event.pointerId);
+    pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+    if (pointers.size === 2) {
       pinchStartDist = pinchDistance();
       pinchStartSize = getSize?.() ?? 3;
       currentPinchSize = pinchStartSize;
       didPinch = true;
     }
-  });
+  }
 
-  el.addEventListener('pointermove', (event) => {
+  function handlePointerMove(event) {
     if (!pointers.has(event.pointerId)) return;
     pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
 
@@ -79,9 +91,11 @@ export function makeDraggable(el, container, { onDragEnd, onTap, getSize, onResi
     if (dragging) {
       el.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
     }
-  });
+  }
 
-  function onPointerUp(event) {
+  function handlePointerUp(event) {
+    if (!pointers.has(event.pointerId)) return;
+
     const wasPinching = pointers.size >= 2;
     pointers.delete(event.pointerId);
 
@@ -118,8 +132,10 @@ export function makeDraggable(el, container, { onDragEnd, onTap, getSize, onResi
     onDragEnd?.(xPct, yPct);
   }
 
-  el.addEventListener('pointerup', onPointerUp);
-  el.addEventListener('pointercancel', onPointerUp);
+  document.addEventListener('pointerdown', handlePointerDown);
+  document.addEventListener('pointermove', handlePointerMove);
+  document.addEventListener('pointerup', handlePointerUp);
+  document.addEventListener('pointercancel', handlePointerUp);
 }
 
 function clamp(value, min, max) {

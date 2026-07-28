@@ -100,6 +100,8 @@
   position: relative;
   flex: 1 1 auto;
   overflow: hidden;
+  /* 원이 아닌 배경을 손가락으로 끌어도 브라우저 기본 스크롤/팬이 절대 일어나지 않도록 */
+  touch-action: none;
   background: linear-gradient(180deg, var(--bg) 0%, var(--bg-soft) 100%);
 }
 

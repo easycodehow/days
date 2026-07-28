@@ -597,3 +597,20 @@
   1. 원 테두리가 눈에 띄게 두꺼워졌는지
   2. 겹친 원들 중 마지막으로 터치한 원이 위로 올라오는지
 - 확인되면 남은 3단계 항목(다크모드/클립보드 복사/공유/메모 개수 표시/pinned/JSON 백업) 중 선택해서 진행 (다음 승인 필요)
+
+---
+
+## 2026-07-28 (7)
+
+### 이번에 완료한 작업
+- 사용자가 테두리 두께/z-index 확인 완료 → 신규 버그 제보: 원의 글자를 잘못 터치하면 커서가 들어가거나 텍스트가 선택되면서 (모바일) 사전 찾기 팝업이 뜸. 수정 버튼 누르기 전(읽기 전용 상태)에는 이걸 막고 싶다는 요청
+  - `css/components.css`: `.memo-circle__title`(메인화면 원 제목), `.memo-circle__excerpt`(미리보기 본문 일부)에 `user-select:none` + `-webkit-touch-callout:none`(iOS 길게 누르기 메뉴 차단) 추가
+  - `css/layout.css`: 상세보기의 읽기 전용 `.detail-view__title`, `.detail-view__content`에도 동일하게 추가. 실제 편집용 `.detail-view__title-input`/`.detail-view__content-input`는 그대로 둬서 수정 모드에서는 정상적으로 선택 가능
+  - `service-worker.js`: 캐시 버전 `v25` → `v26`
+  - **검증(1차, 자동화)**: 헤드리스 Chrome으로 (1) 원 제목·읽기 전용 제목/본문의 `user-select`가 `none`인지, (2) 수정 모드 진입 후 입력창들의 `user-select`가 `none`이 아닌지(정상적으로 `auto`) 확인
+- `CLAUDE.md` 체크리스트에 항목 추가
+- GitHub 푸시 완료, Vercel 배포 완료(`days-cache-v26` 라이브 확인)
+
+### 다음 작업 제안
+- 사용자가 폰에서 완전 종료 후 재실행하여 원 글자/상세보기 텍스트를 길게 눌러도 선택·사전 팝업이 안 뜨는지 확인(2차 확인)
+- 확인되면 남은 3단계 항목(다크모드/클립보드 복사/공유/메모 개수 표시/pinned/JSON 백업) 중 선택해서 진행 (다음 승인 필요)

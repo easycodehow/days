@@ -23,15 +23,21 @@
   transition: width 0.15s ease, height 0.15s ease, font-size 0.15s ease;
 }
 
-/* 실현된 메모: 실선 */
-.memo-circle--realized {
+/* 확정된 메모: 실선 */
+.memo-circle--confirmed {
   border: 1.5px solid var(--sky-200);
 }
 
-/* 실현되지 않은(예정) 메모: 점선 */
-.memo-circle--planned {
+/* 생각중인 메모: 점선 */
+.memo-circle--thinking {
   border: 1.5px dashed var(--sky-200);
   background-color: var(--bg-soft);
+}
+
+/* 가능성 없는 메모: 회색 채움 */
+.memo-circle--unlikely {
+  border: 1.5px solid var(--ink-500);
+  background-color: var(--ink-200);
 }
 
 /* 지난 날짜: 실선/점선 형태는 유지하고 색만 회색으로 흐림 */
@@ -109,6 +115,56 @@
   align-items: center;
   justify-content: center;
   touch-action: manipulation;
+}
+
+/* ── 상세보기 편집 모드 — 메모 확정 상태(3단계) 선택 UI ──
+   범례와 선택 버튼을 하나로 합쳐, 실제 원 스타일 그대로 축소한 미니 원을 탭해서 고른다 */
+.status-picker {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.status-picker__option {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 4px;
+  border-radius: 12px;
+}
+
+.status-picker__option--selected {
+  box-shadow: 0 0 0 2px var(--focus-ring) inset;
+}
+
+.status-picker__circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+}
+
+.status-picker__circle--confirmed {
+  border: 1.5px solid var(--sky-200);
+  background-color: var(--surface);
+}
+
+.status-picker__circle--thinking {
+  border: 1.5px dashed var(--sky-200);
+  background-color: var(--bg-soft);
+}
+
+.status-picker__circle--unlikely {
+  border: 1.5px solid var(--ink-500);
+  background-color: var(--ink-200);
+}
+
+.status-picker__label {
+  font-size: var(--fs-meta);
+  color: var(--ui-text);
+  text-align: center;
 }
 
 /* ── 버튼 (상세보기 수정/삭제/저장하기 등) ── */

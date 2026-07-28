@@ -17,7 +17,7 @@ const SEED_MEMOS = [
     size: 2,
     xPct: 22,
     yPct: 22,
-    realized: true,
+    status: 'confirmed',
   },
   {
     id: 'mock-2',
@@ -27,7 +27,7 @@ const SEED_MEMOS = [
     size: 4,
     xPct: 62,
     yPct: 38,
-    realized: true,
+    status: 'confirmed',
   },
   {
     id: 'mock-3',
@@ -37,7 +37,7 @@ const SEED_MEMOS = [
     size: 5,
     xPct: 40,
     yPct: 66,
-    realized: false,
+    status: 'thinking',
   },
   {
     id: 'mock-4',
@@ -47,7 +47,7 @@ const SEED_MEMOS = [
     size: 1,
     xPct: 80,
     yPct: 72,
-    realized: false,
+    status: 'unlikely',
   },
 ];
 
@@ -71,7 +71,7 @@ function createDraftMemo(date) {
     size: 3,
     xPct: 30 + Math.random() * 40,
     yPct: 30 + Math.random() * 40,
-    realized: false,
+    status: 'thinking',
     pinned: false,
     createdAt: now,
     updatedAt: now,

@@ -1,7 +1,7 @@
 // js/views/detailView.js
 // 상세보기 화면 — 전체 본문 + 수정/삭제/저장하기
 
-import { isPastMemo, formatDateKo } from '../memo.js';
+import { isPastMemo, formatDateKo, getMemoStatus, MEMO_STATUS_OPTIONS } from '../memo.js';
 
 // onSave(updatedMemo), onDelete(id)는 기존 메모에만 전달 — 없으면 삭제 버튼을 안 보여준다.
 // onClose(), startEditing: true면 처음부터 편집 상태로 연다(새 메모 작성용)
@@ -41,6 +41,38 @@ export function renderDetailView(container, memo, { onSave, onDelete, onClose, s
   contentInput.placeholder = '내용을 입력하세요';
   contentInput.value = memo.content;
 
+  // 확정 상태(3단계) 선택 — 범례를 그대로 선택 버튼으로 사용
+  let selectedStatus = getMemoStatus(memo);
+
+  const statusPicker = document.createElement('div');
+  statusPicker.className = 'status-picker is-hidden';
+
+  const statusButtons = MEMO_STATUS_OPTIONS.map(({ value, label }) => {
+    const option = document.createElement('button');
+    option.type = 'button';
+    option.className = 'status-picker__option';
+    option.classList.toggle('status-picker__option--selected', value === selectedStatus);
+
+    const circle = document.createElement('span');
+    circle.className = `status-picker__circle status-picker__circle--${value}`;
+
+    const labelEl = document.createElement('span');
+    labelEl.className = 'status-picker__label';
+    labelEl.textContent = label;
+
+    option.append(circle, labelEl);
+    option.addEventListener('click', () => {
+      selectedStatus = value;
+      statusButtons.forEach((btn) => {
+        btn.classList.toggle('status-picker__option--selected', btn.dataset.value === value);
+      });
+    });
+    option.dataset.value = value;
+
+    statusPicker.appendChild(option);
+    return option;
+  });
+
   const actions = document.createElement('div');
   actions.className = 'detail-view__actions';
 
@@ -67,6 +99,7 @@ export function renderDetailView(container, memo, { onSave, onDelete, onClose, s
     contentText.classList.add('is-hidden');
     titleInput.classList.remove('is-hidden');
     contentInput.classList.remove('is-hidden');
+    statusPicker.classList.remove('is-hidden');
     editBtn.classList.add('is-hidden');
   }
 
@@ -77,6 +110,7 @@ export function renderDetailView(container, memo, { onSave, onDelete, onClose, s
       ...memo,
       title: editing ? titleInput.value.trim() || memo.title : memo.title,
       content: editing ? contentInput.value.trim() : memo.content,
+      status: editing ? selectedStatus : getMemoStatus(memo),
       updatedAt: new Date().toISOString(),
     };
     onSave?.(updated);
@@ -99,7 +133,7 @@ export function renderDetailView(container, memo, { onSave, onDelete, onClose, s
     if (onDelete) actions.insertBefore(deleteBtn, saveBtn);
   }
 
-  container.append(backBtn, dateLabel, titleText, titleInput, contentText, contentInput, actions);
+  container.append(backBtn, dateLabel, titleText, titleInput, contentText, contentInput, statusPicker, actions);
 
   if (startEditing) titleInput.focus();
 }

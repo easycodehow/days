@@ -1,7 +1,7 @@
 // js/views/mainView.js
 // 메인화면 — 떠다니는 메모 원(뭉게구름) 렌더링
 
-import { getCircleDiameter, getTitleFontSize, isPastMemo } from '../memo.js';
+import { getCircleDiameter, getTitleFontSize, isPastMemo, getMemoStatus } from '../memo.js';
 import { makeDraggable } from '../ui/drag.js';
 
 // 미리보기로 커질 때 원래 크기보다 얼마나 더 커질지 — 고정값이 아니라 원래 크기에 더하는
@@ -53,9 +53,12 @@ function createMemoCircle(memo, index) {
   const diameter = getCircleDiameter(memo.size);
   const past = isPastMemo(memo.date);
 
+  const status = getMemoStatus(memo);
+
   el.className = 'memo-circle';
-  el.classList.toggle('memo-circle--realized', memo.realized);
-  el.classList.toggle('memo-circle--planned', !memo.realized);
+  el.classList.toggle('memo-circle--confirmed', status === 'confirmed');
+  el.classList.toggle('memo-circle--thinking', status === 'thinking');
+  el.classList.toggle('memo-circle--unlikely', status === 'unlikely');
   el.classList.toggle('memo-circle--past', past);
   el.dataset.id = memo.id;
 

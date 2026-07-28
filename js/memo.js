@@ -17,6 +17,22 @@ export function getTitleFontSize(size) {
   return TITLE_FONT_PX[size] ?? TITLE_FONT_PX[3];
 }
 
+// 메모의 확정 상태 3단계 — 원 스타일(채움/점선/실선)과 상세보기 선택 UI에서 함께 쓴다
+export const MEMO_STATUS_OPTIONS = [
+  { value: 'unlikely', label: '가능성 없는 메모' },
+  { value: 'thinking', label: '생각중인 메모' },
+  { value: 'confirmed', label: '확정된 메모' },
+];
+
+// 메모의 확정 상태(3단계)를 반환한다. 예전 데이터는 status 필드가 없고 realized(2단계)만
+// 있을 수 있어, 그 경우 realized:true→confirmed, false→thinking으로 변환해 호환한다.
+export function getMemoStatus(memo) {
+  if (MEMO_STATUS_OPTIONS.some((option) => option.value === memo.status)) {
+    return memo.status;
+  }
+  return memo.realized ? 'confirmed' : 'thinking';
+}
+
 // 메모 날짜가 오늘보다 이전(지난 날짜)인지 판정한다 — 저장 필드가 아니라 렌더링 시점에 계산
 export function isPastMemo(dateStr, today = new Date()) {
   return dateStr < formatDate(today);

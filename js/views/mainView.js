@@ -69,13 +69,14 @@ export function renderMainView(container, memos, { onMemoMove, onOpenDetail, onM
       },
       onResizeEnd: (finalSize) => onMemoResize?.(memo.id, finalSize),
       xPctRange: [-PAN_RANGE_PCT, 100 + PAN_RANGE_PCT],
+      yPctRange: [-PAN_RANGE_PCT, 100 + PAN_RANGE_PCT],
     });
   });
 
   makePannable(container, canvas, PAN_RANGE_PCT, () => activeCircleCount);
 }
 
-// 배경을 한 손가락으로 좌우로 끌면 캔버스 전체가 이동(패닝)한다.
+// 배경을 한 손가락으로 상하좌우로 끌면 캔버스 전체가 이동(패닝)한다.
 // viewportEl: 화면에 보이는 고정 영역(.app-main, overflow:hidden)
 // canvasEl: 실제로 이동시킬 원 레이어
 // getActiveCircleCount(): 지금 어떤 원이든 드래그/핀치 중이면 0보다 큰 값 — 그동안은 패닝 무시
@@ -83,8 +84,11 @@ function makePannable(viewportEl, canvasEl, panRangePct, getActiveCircleCount) {
   const PAN_TAP_THRESHOLD_PX = 6;
   const pointers = new Map();
   let panX = 0;
+  let panY = 0;
   let startClientX = 0;
+  let startClientY = 0;
   let startPanX = 0;
+  let startPanY = 0;
   let dragging = false;
 
   function handlePointerDown(event) {
@@ -93,7 +97,9 @@ function makePannable(viewportEl, canvasEl, panRangePct, getActiveCircleCount) {
     if (pointers.size > 0) return; // 패닝은 한 손가락만 처리
     pointers.set(event.pointerId, true);
     startClientX = event.clientX;
+    startClientY = event.clientY;
     startPanX = panX;
+    startPanY = panY;
     dragging = false;
   }
 
@@ -102,13 +108,16 @@ function makePannable(viewportEl, canvasEl, panRangePct, getActiveCircleCount) {
     if (getActiveCircleCount() > 0) return; // 패닝 도중 원 조작이 시작되면 더 이상 움직이지 않음
 
     const dx = event.clientX - startClientX;
-    if (!dragging && Math.abs(dx) < PAN_TAP_THRESHOLD_PX) return;
+    const dy = event.clientY - startClientY;
+    if (!dragging && Math.hypot(dx, dy) < PAN_TAP_THRESHOLD_PX) return;
     dragging = true;
 
     const rect = viewportEl.getBoundingClientRect();
-    const maxAbsPan = (panRangePct / 100) * rect.width;
-    panX = clampPan(startPanX + dx, -maxAbsPan, maxAbsPan);
-    canvasEl.style.transform = `translateX(${panX}px)`;
+    const maxAbsPanX = (panRangePct / 100) * rect.width;
+    const maxAbsPanY = (panRangePct / 100) * rect.height;
+    panX = clampPan(startPanX + dx, -maxAbsPanX, maxAbsPanX);
+    panY = clampPan(startPanY + dy, -maxAbsPanY, maxAbsPanY);
+    canvasEl.style.transform = `translate(${panX}px, ${panY}px)`;
   }
 
   function handlePointerUp(event) {
